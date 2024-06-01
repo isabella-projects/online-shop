@@ -1,18 +1,24 @@
+require('dotenv').config();
+
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const { getViewsPath, rootDir } = require('./util/path');
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const app = express();
 
-app.set('view engine', 'pug');
-app.set('views', 'views');
+const viewEngine = process.env.VIEW_ENGINE;
+const viewsPath = getViewsPath(viewEngine);
+
+app.set('view engine', viewEngine);
+app.set('views', path.join(rootDir, viewsPath));
 
 const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(rootDir, 'public')));
 
 app.use('/admin', adminData.routes);
 app.use(shopRoutes);
