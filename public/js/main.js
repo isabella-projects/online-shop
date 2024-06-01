@@ -1,1 +1,1 @@
-console.log('Hello from my Frontend JavaScript files');
+console.log('Output');
