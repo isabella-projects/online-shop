@@ -3,6 +3,8 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const errorController = require('./controllers/error');
 const { getViewsPath, rootDir } = require('./util/path');
 
 const PORT = process.env.PORT || 3000;
@@ -20,14 +22,10 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
-app.use('/admin', adminData.routes);
+app.use('/admin', adminData);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-    res.status(404).render('404', {
-        docTitle: 'Page Not Found',
-    });
-});
+app.use(errorController.get404);
 
 app.listen(PORT, () => {
     console.log(`Express server is listening on port ${PORT}`);
