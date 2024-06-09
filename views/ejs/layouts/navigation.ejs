@@ -1,10 +1,8 @@
 <div class="backdrop"></div>
+
 <header class="main-header">
-    <button id="side-menu-toggle">
-        <svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#e8eaed">
-            <path d="M120-240v-66.67h720V-240H120Zm0-206.67v-66.66h720v66.66H120Zm0-206.66V-720h720v66.67H120Z" />
-        </svg>
-    </button>
+    <a href="/" class="main-header__logo"><%- include('../svg/logo.ejs') %></a>
+    <button id="side-menu-toggle"><%- include('../svg/mobile-btn.ejs') %></button>
     <nav class="main-header__nav">
         <ul class="main-header__item-list">
             <li class="main-header__item">

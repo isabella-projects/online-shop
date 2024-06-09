@@ -6,22 +6,27 @@
 }
 
 .product-item {
-    width: 20rem;
+    width: 22rem;
     max-width: 95%;
+    height: 100%;
     margin: 1rem;
+    padding: 0.725rem;
+    border: 1px solid rgba(43, 43, 43, 0.384);
+    border-radius: 10px;
 }
 
 .product__title {
-    font-size: 1.2rem;
+    font-size: 1.625rem;
     text-align: center;
 }
 
 .product__price {
     text-align: center;
-    color: #4d4d4d;
+    color: #121212;
     margin-bottom: 0.5rem;
 }
 
 .product__description {
+    font-style: italic;
     text-align: center;
 }
