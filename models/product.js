@@ -4,6 +4,8 @@ const ShortUniqueId = require('short-unique-id');
 const { randomUUID } = new ShortUniqueId({ length: 10 });
 const { rootDir } = require('../util/path');
 
+const Cart = require('../models/cart');
+
 const p = path.join(rootDir, 'data', 'products.json');
 
 const getProducsFromFile = (callback) => {
@@ -22,7 +24,7 @@ module.exports = class Product {
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
-        this.price = price;
+        this.price = +price;
     }
 
     save() {
@@ -44,13 +46,25 @@ module.exports = class Product {
         });
     }
 
+    static deleteById(id) {
+        getProducsFromFile((products) => {
+            const product = products.find((prod) => prod.id === id);
+            const updatedProducts = products.filter((prod) => prod.id !== id);
+            fs.writeFile(p, JSON.stringify(updatedProducts, null, 4), (error) => {
+                if (!error) {
+                    Cart.deleteProduct(id, product.price);
+                }
+            });
+        });
+    }
+
     static fetchAll(callback) {
         getProducsFromFile(callback);
     }
 
     static findById(id, callback) {
         getProducsFromFile((products) => {
-            const product = products.find((p) => p.id === id);
+            const product = products.find((prod) => prod.id === id);
             callback(product);
         });
     }

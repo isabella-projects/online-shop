@@ -17,24 +17,53 @@ module.exports = class Cart {
             const existingProduct = cart.products[existingProductIndex];
             let updatedProduct;
 
-            const roundedPrice = Math.round(parseFloat(productPrice) * 100) / 100;
-
             if (existingProduct) {
                 updatedProduct = { ...existingProduct };
                 updatedProduct.quantity += 1;
-                updatedProduct.price = roundedPrice;
+                updatedProduct.price = +productPrice;
                 cart.products = [...cart.products];
                 cart.products[existingProductIndex] = updatedProduct;
             } else {
-                updatedProduct = { id: id, quantity: 1, price: roundedPrice };
+                updatedProduct = { id: id, quantity: 1, price: +productPrice };
                 cart.products = [...cart.products, updatedProduct];
             }
 
-            cart.totalPrice = Math.round((cart.totalPrice + roundedPrice) * 100) / 100;
+            cart.totalPrice += +productPrice;
 
-            fs.writeFile(p, JSON.stringify(cart), (error) => {
+            fs.writeFile(p, JSON.stringify(cart, null, 4), (error) => {
                 console.log(error);
             });
+        });
+    }
+
+    static deleteProduct(id, productPrice) {
+        fs.readFile(p, (error, fileContent) => {
+            if (error) {
+                return;
+            }
+
+            const updatedCart = { ...JSON.parse(fileContent) };
+            const product = updatedCart.products.find((prod) => prod.id === id);
+            const productQuantity = product.quantity;
+
+            updatedCart.products = updatedCart.products.filter((prod) => prod.id !== id);
+            updatedCart.totalPrice = updatedCart.totalPrice - productPrice * productQuantity;
+
+            fs.writeFile(p, JSON.stringify(updatedCart, null, 4), (error) => {
+                console.log(error);
+            });
+        });
+    }
+
+    static getCart(callback) {
+        fs.readFile(p, (error, fileContent) => {
+            const cart = JSON.parse(fileContent);
+
+            if (error) {
+                callback(null);
+            } else {
+                callback(cart);
+            }
         });
     }
 };
