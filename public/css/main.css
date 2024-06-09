@@ -11,6 +11,10 @@ form {
     display: inline;
 }
 
+.centered {
+    text-align: center;
+}
+
 main {
     padding: 1rem;
 }

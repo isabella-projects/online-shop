@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const ShortUniqueId = require('short-unique-id');
+const { randomUUID } = new ShortUniqueId({ length: 10 });
 const { rootDir } = require('../util/path');
 
 const p = path.join(rootDir, 'data', 'products.json');
@@ -23,6 +25,7 @@ module.exports = class Product {
     }
 
     save() {
+        this.id = randomUUID();
         getProducsFromFile((products) => {
             products.push(this);
             fs.writeFile(p, JSON.stringify(products), (error) => {
@@ -33,5 +36,12 @@ module.exports = class Product {
 
     static fetchAll(callback) {
         getProducsFromFile(callback);
+    }
+
+    static findById(id, callback) {
+        getProducsFromFile((products) => {
+            const product = products.find((p) => p.id === id);
+            callback(product);
+        });
     }
 };
