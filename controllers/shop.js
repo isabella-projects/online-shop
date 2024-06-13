@@ -1,38 +1,44 @@
 const Product = require('../models/product');
 const Cart = require('../models/cart');
 
-exports.getProducts = (req, res, next) => {
-    Product.fetchAll((products) => {
-        res.render('shop/product-list', {
-            prods: products,
-            docTitle: 'All Products',
-            path: '/products',
-        });
-    });
+exports.getProducts = (_req, res, _next) => {
+    Product.fetchAll()
+        .then(([rows, _fieldData]) => {
+            res.render('shop/product-list', {
+                prods: rows,
+                docTitle: 'All Products',
+                path: '/products',
+            });
+        })
+        .catch((error) => console.log(error));
 };
 
-exports.getProduct = (req, res, next) => {
+exports.getProduct = (req, res, _next) => {
     const productId = req.params.productId;
-    Product.findById(productId, (product) => {
-        res.render('shop/product-detail', {
-            product: product,
-            docTitle: product.title,
-            path: '/products',
-        });
-    });
+    Product.findById(productId)
+        .then(([product]) => {
+            res.render('shop/product-detail', {
+                product: product[0],
+                docTitle: product.title,
+                path: '/products',
+            });
+        })
+        .catch((error) => console.log(error));
 };
 
-exports.getIndex = (req, res, next) => {
-    Product.fetchAll((products) => {
-        res.render('shop/index', {
-            prods: products,
-            docTitle: 'Shop',
-            path: '/',
-        });
-    });
+exports.getIndex = (_req, res, _next) => {
+    Product.fetchAll()
+        .then(([rows, _fieldData]) => {
+            res.render('shop/index', {
+                prods: rows,
+                docTitle: 'Shop',
+                path: '/',
+            });
+        })
+        .catch((error) => console.log(error));
 };
 
-exports.getCart = (req, res, next) => {
+exports.getCart = (_req, res, _next) => {
     Cart.getCart((cart) => {
         Product.fetchAll((products) => {
             const cartProducts = [];
