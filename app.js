@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
 const { getViewsPath, rootDir } = require('./util/path');
 
+const sequelize = require('./util/database');
+
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -27,6 +29,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-app.listen(PORT, () => {
-    console.log(`Express server is listening on port ${PORT}`);
-});
+sequelize
+    .sync()
+    .then((_result) => {
+        app.listen(PORT, () => {
+            console.log(`Express server is listening on port ${PORT}`);
+        });
+    })
+    .catch((error) => console.log(error));
