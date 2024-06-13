@@ -6,7 +6,7 @@
 
 # 📝 Description
 
-## ⚡ Exploring Node.js, the Express.js framework, MongoDB, GraphQL and more by building demo project.
+## ⚡ Online Shop Web Application using Node.js w/ Express.js, MongoDB, GraphQL and more..
 
 # 🛠 Tech Stack
 
