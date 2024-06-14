@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const errorController = require('./controllers/error');
-const { getViewsPath, rootDir } = require('./util/path');
+const { getViewsPath, getSequelizeMethods, rootDir } = require('./util/helpers');
 
 const sequelize = require('./util/database');
 const Product = require('./models/product');
@@ -26,6 +26,17 @@ const shopRoutes = require('./routes/shop');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(rootDir, 'public')));
 
+app.use((req, _res, next) => {
+    User.findByPk(1)
+        .then((user) => {
+            req.user = user;
+            next();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+});
+
 app.use('/admin', adminData);
 app.use(shopRoutes);
 
@@ -35,8 +46,20 @@ Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
 
 sequelize
-    .sync({ force: true })
+    .sync()
     .then((_result) => {
+        return User.findByPk(1);
+    })
+    .then((user) => {
+        if (!user) {
+            return User.create({
+                name: 'Bella',
+                email: 'test@est.com',
+            });
+        }
+        return Promise.resolve(user);
+    })
+    .then((_user) => {
         app.listen(PORT, () => {
             console.log(`Express server is listening on port ${PORT}`);
         });
