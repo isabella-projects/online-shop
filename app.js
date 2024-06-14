@@ -8,6 +8,8 @@ const errorController = require('./controllers/error');
 const { getViewsPath, rootDir } = require('./util/path');
 
 const sequelize = require('./util/database');
+const Product = require('./models/product');
+const User = require('./models/user');
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -29,8 +31,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 sequelize
-    .sync()
+    .sync({ force: true })
     .then((_result) => {
         app.listen(PORT, () => {
             console.log(`Express server is listening on port ${PORT}`);
